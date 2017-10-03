@@ -31,6 +31,7 @@ public class ItemDetailFragment extends Fragment {
         TextView tvBody2 = view.findViewById(R.id.tvBody2);
         TextView tvTitle3 = view.findViewById(R.id.tvTitle3);
         TextView tvBody3 = view.findViewById(R.id.tvBody3);
+        View tvView3= view.findViewById(R.id.tvView);
 
         Canteen[] info=item.getBody();
         tvTitle1.setText(info[0].getTitle());
@@ -42,8 +43,10 @@ public class ItemDetailFragment extends Fragment {
         if(info[2]==null){
             tvTitle3.setVisibility(View.GONE);
             tvBody3.setVisibility(View.GONE);
+            tvView3.setVisibility(View.GONE);
         }
         else {
+            tvView3.setVisibility(View.VISIBLE);
             tvTitle3.setVisibility(View.VISIBLE);
             tvBody3.setVisibility(View.VISIBLE);
             tvTitle3.setText(info[2].getTitle());

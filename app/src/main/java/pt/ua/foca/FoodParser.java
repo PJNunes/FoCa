@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,9 +24,8 @@ class FoodParser {
     private String jsonStr = null;
 
     public Tuple[] getData() throws JSONException {
-        //cache
-        if (jsonStr==null)
-            jsonStr = callAPI();
+
+        jsonStr = callAPI();
         JSONObject json = new JSONObject(jsonStr);
         JSONArray menu = json.getJSONObject("menus").getJSONArray("menu");
 
@@ -44,9 +44,9 @@ class FoodParser {
 
             day = entry.getJSONObject("@attributes").getString("weekday");
             if(lastDay.compareTo("")!=0 && day.compareTo(lastDay)!=0){
-                title=translate(lastDay) +": Almoço";
+                title=translate(lastDay) +" - Almoço";
                 results[j]= new Tuple<>(title,almoco);
-                title=translate(lastDay) +": Jantar";
+                title=translate(lastDay) +" - Jantar";
                 results[++j]= new Tuple<>(title,jantar);
                 j++;
                 almoco = new Canteen[3];
@@ -71,18 +71,16 @@ class FoodParser {
             Log.v("FP",canteen+" "+day);
             if(entry.getJSONObject("@attributes").getString("meal").compareTo("Almoço")==0) {
                 almoco[k = getNext(k)] = new Canteen(canteen, content);
-                Log.v("FP", k + " alm");
             }
             else {
                 jantar[k] = new Canteen(canteen, content);
-                Log.v("FP", k+" jan");
             }
             lastDay=day;
         }
 
-        title=translate(day) +": Almoço";
+        title=translate(day) +" - Almoço";
         results[j]= new Tuple<>(title,almoco);
-        title=translate(day) +": Jantar";
+        title=translate(day) +" - Jantar";
         results[++j]= new Tuple<>(title,jantar);
 
         return results;

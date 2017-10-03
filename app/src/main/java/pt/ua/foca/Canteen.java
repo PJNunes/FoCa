@@ -1,10 +1,13 @@
 package pt.ua.foca;
 
+import java.io.Serializable;
+
 /**
  * Created by Pedro Nunes.
  */
 
-class Canteen {
+class Canteen implements Serializable{
+    private static final long serialVersionUID = -1213949467658913456L;
     private String title;
     private String body;
 
