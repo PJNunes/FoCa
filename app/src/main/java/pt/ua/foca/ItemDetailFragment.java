@@ -2,7 +2,6 @@ package pt.ua.foca;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +25,12 @@ public class ItemDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item_detail,
                 container, false);
-        TextView tvTitle1 = (TextView) view.findViewById(R.id.tvTitle1);
-        TextView tvBody1 = (TextView) view.findViewById(R.id.tvBody1);
-        TextView tvTitle2 = (TextView) view.findViewById(R.id.tvTitle2);
-        TextView tvBody2 = (TextView) view.findViewById(R.id.tvBody2);
-        TextView tvTitle3 = (TextView) view.findViewById(R.id.tvTitle3);
-        TextView tvBody3 = (TextView) view.findViewById(R.id.tvBody3);
+        TextView tvTitle1 = view.findViewById(R.id.tvTitle1);
+        TextView tvBody1 = view.findViewById(R.id.tvBody1);
+        TextView tvTitle2 = view.findViewById(R.id.tvTitle2);
+        TextView tvBody2 = view.findViewById(R.id.tvBody2);
+        TextView tvTitle3 = view.findViewById(R.id.tvTitle3);
+        TextView tvBody3 = view.findViewById(R.id.tvBody3);
 
         Canteen[] info=item.getBody();
         tvTitle1.setText(info[0].getTitle());

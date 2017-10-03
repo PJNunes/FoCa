@@ -12,39 +12,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 
 /**
  * Created by Pedro Nunes
  */
 
-public class FoodParser {
+class FoodParser {
 
     //cache
-    String jsonStr = null;
-    /* The date/time conversion code is going to be moved outside the asynctask later,
-        * so for convenience we're breaking it out into its own method now.
-        */
-    private String getReadableDateString(long time){
-        // Because the API returns a unix timestamp (measured in seconds),
-        // it must be converted to milliseconds in order to be converted to valid date.
-        SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
-        return shortenedDateFormat.format(time);
-    }
+    private String jsonStr = null;
 
-    /**
-     * Prepare the weather high/lows for presentation.
-     */
-    private String formatHighLows(double high, double low) {
-        // For presentation, assume the user doesn't care about tenths of a degree.
-        long roundedHigh = Math.round(high);
-        long roundedLow = Math.round(low);
-
-        String highLowStr = roundedHigh + "/" + roundedLow;
-        return highLowStr;
-    }
-
-    public Tuple<String, Canteen[]>[] getData() throws JSONException {
+    public Tuple[] getData() throws JSONException {
         //cache
         if (jsonStr==null)
             jsonStr = callAPI();
@@ -53,7 +31,7 @@ public class FoodParser {
 
         int j=0;
         int k=2;
-        Tuple<String, Canteen[]>[] results=new Tuple[menu.length()*2/5];
+        Tuple[] results=new Tuple[menu.length()*2/5];
         Canteen[] almoco = new Canteen[3];
         Canteen[] jantar = new Canteen[3];
         String lastDay="";
@@ -67,9 +45,9 @@ public class FoodParser {
             day = entry.getJSONObject("@attributes").getString("weekday");
             if(lastDay.compareTo("")!=0 && day.compareTo(lastDay)!=0){
                 title=translate(lastDay) +": Almoço";
-                results[j]= new Tuple(title,almoco);
+                results[j]= new Tuple<>(title,almoco);
                 title=translate(lastDay) +": Jantar";
-                results[++j]= new Tuple(title,jantar);
+                results[++j]= new Tuple<>(title,jantar);
                 j++;
                 almoco = new Canteen[3];
                 jantar = new Canteen[3];
@@ -103,14 +81,14 @@ public class FoodParser {
         }
 
         title=translate(day) +": Almoço";
-        results[j]= new Tuple(title,almoco);
+        results[j]= new Tuple<>(title,almoco);
         title=translate(day) +": Jantar";
-        results[++j]= new Tuple(title,jantar);
+        results[++j]= new Tuple<>(title,jantar);
 
         return results;
     }
 
-    public String callAPI() {
+    private String callAPI() {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
@@ -124,16 +102,17 @@ public class FoodParser {
             urlConnection.connect();
             // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
                 // Nothing to do.
                 foodJsonStr = null;
             }
+            assert inputStream != null;
             reader = new BufferedReader(new InputStreamReader(inputStream));
 
             String line;
             while ((line = reader.readLine()) != null) {
-                buffer.append(line + "\n");
+                buffer.append(line).append("\n");
             }
 
             if (buffer.length() == 0) {

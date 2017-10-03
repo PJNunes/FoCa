@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 import org.json.JSONException;
@@ -20,9 +19,9 @@ public class ItemsListActivity  extends AppCompatActivity implements ItemsListFr
         FoodParser parser = new FoodParser();
 
         try {
-            Tuple<String, Canteen[]>[] s = parser.getData();
-            for (int i=0;i<s.length;i++) {
-                Item.addItem(s[i].getTitle(), s[i].getBody());
+            Tuple[] s = parser.getData();
+            for (Tuple value : s) {
+                Item.addItem((String) value.getTitle(), (Canteen[]) value.getBody());
             }
         } catch (JSONException e) {
             e.printStackTrace();

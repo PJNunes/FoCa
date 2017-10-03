@@ -22,8 +22,8 @@ public class ItemsListFragment extends Fragment {
 
     private OnItemSelectedListener listener;
 
-    public interface OnItemSelectedListener {
-        public void onItemSelected(Item i);
+    interface OnItemSelectedListener {
+        void onItemSelected(Item i);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ItemsListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Create arraylist from item fixtures
         ArrayList<Item> items = Item.getItems();
-        adapterItems = new ArrayAdapter<Item>(getActivity(),
+        adapterItems = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_list_item_activated_1, items);
     }
 
@@ -51,7 +51,7 @@ public class ItemsListFragment extends Fragment {
         // Inflate view
         View view = inflater.inflate(R.layout.fragment_items_list, container,false);
         // Bind adapter to ListView
-        lvItems = (ListView) view.findViewById(R.id.lvItems);
+        lvItems = view.findViewById(R.id.lvItems);
         lvItems.setAdapter(adapterItems);
         lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
