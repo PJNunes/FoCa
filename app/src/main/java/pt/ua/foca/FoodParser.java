@@ -44,48 +44,70 @@ public class FoodParser {
         return highLowStr;
     }
 
-    public String[][] getData() throws JSONException {
+    public Tuple<String, Canteen[]>[] getData() throws JSONException {
         //cache
         if (jsonStr==null)
             jsonStr = callAPI();
         JSONObject json = new JSONObject(jsonStr);
         JSONArray menu = json.getJSONObject("menus").getJSONArray("menu");
 
-        String[] content = new String[menu.length()];
-        String[] titles = new String[menu.length()];
+        int j=0;
+        int k=2;
+        Tuple<String, Canteen[]>[] results=new Tuple[menu.length()*2/5];
+        Canteen[] almoco = new Canteen[3];
+        Canteen[] jantar = new Canteen[3];
+        String lastDay="";
+        String day="";
+        String title;
+        String content;
 
         for (int i=0;i<menu.length();i++) {
             JSONObject entry = menu.getJSONObject(i);
 
+            day = entry.getJSONObject("@attributes").getString("weekday");
+            if(lastDay.compareTo("")!=0 && day.compareTo(lastDay)!=0){
+                title=translate(lastDay) +": Almoço";
+                results[j]= new Tuple(title,almoco);
+                title=translate(lastDay) +": Jantar";
+                results[++j]= new Tuple(title,jantar);
+                j++;
+                almoco = new Canteen[3];
+                jantar = new Canteen[3];
+            }
             //titles
             String canteen = entry.getJSONObject("@attributes").getString("canteen");
-            String day = entry.getJSONObject("@attributes").getString("weekday");
-            String meal = entry.getJSONObject("@attributes").getString("meal");
-
-            titles[i] = day+" - "+canteen+" ("+meal+")";
-
             //content
             String disabled = entry.getJSONObject("@attributes").getString("disabled");
 
             //sem ementa
             if (!disabled.equals("0")) {
-                content[i] = disabled;
+                content = disabled;
             } else {
-                content[i] = "";
+                content = "";
                 JSONArray items = entry.getJSONObject("items").getJSONArray("item");
                 for (int x=0;x<items.length();x++) {
                     if (!items.getString(x).contains("{"))
-                        content[i] += items.getString(x)+"\n\n";
+                        content += items.getString(x)+"\n\n";
                 }
             }
+            Log.v("FP",canteen+" "+day);
+            if(entry.getJSONObject("@attributes").getString("meal").compareTo("Almoço")==0) {
+                almoco[k = getNext(k)] = new Canteen(canteen, content);
+                Log.v("FP", k + " alm");
+            }
+            else {
+                jantar[k] = new Canteen(canteen, content);
+                Log.v("FP", k+" jan");
+            }
+            lastDay=day;
         }
 
-        String[][] resultStrings = new String[2][menu.length()];
-        resultStrings[0] = titles;
-        resultStrings[1] = content;
-        Log.v("FP","test");
-        return resultStrings;
+        title=translate(day) +": Almoço";
+        results[j]= new Tuple(title,almoco);
+        title=translate(day) +": Jantar";
+        results[++j]= new Tuple(title,jantar);
 
+        return results;
     }
 
     public String callAPI() {
@@ -138,5 +160,31 @@ public class FoodParser {
         }
         return foodJsonStr;
     }
+
+    private String translate(String day){
+        switch (day) {
+            case "Monday":
+                return "Segunda";
+            case "Tuesday":
+                return "Terça";
+            case "Wednesday":
+                return "Quarta";
+            case "Thursday":
+                return "Quinta";
+            case "Friday":
+                return "Sexta";
+            case "Saturday":
+                return "Sábado";
+            default:
+                return "Domingo";
+        }
+    }
+
+    private int getNext(int a){
+        if(a==2)
+            return 0;
+        return a+1;
+    }
 }
+
 

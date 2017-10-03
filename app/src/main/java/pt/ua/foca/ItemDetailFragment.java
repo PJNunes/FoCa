@@ -2,6 +2,7 @@ package pt.ua.foca;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +26,30 @@ public class ItemDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item_detail,
                 container, false);
-        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-        TextView tvBody = (TextView) view.findViewById(R.id.tvBody);
-        tvTitle.setText(item.getTitle());
-        tvBody.setText(item.getBody());
+        TextView tvTitle1 = (TextView) view.findViewById(R.id.tvTitle1);
+        TextView tvBody1 = (TextView) view.findViewById(R.id.tvBody1);
+        TextView tvTitle2 = (TextView) view.findViewById(R.id.tvTitle2);
+        TextView tvBody2 = (TextView) view.findViewById(R.id.tvBody2);
+        TextView tvTitle3 = (TextView) view.findViewById(R.id.tvTitle3);
+        TextView tvBody3 = (TextView) view.findViewById(R.id.tvBody3);
+
+        Canteen[] info=item.getBody();
+        tvTitle1.setText(info[0].getTitle());
+        tvBody1.setText(info[0].getBody());
+
+        tvTitle2.setText(info[1].getTitle());
+        tvBody2.setText(info[1].getBody());
+
+        if(info[2]==null){
+            tvTitle3.setVisibility(View.GONE);
+            tvBody3.setVisibility(View.GONE);
+        }
+        else {
+            tvTitle3.setVisibility(View.VISIBLE);
+            tvBody3.setVisibility(View.VISIBLE);
+            tvTitle3.setText(info[2].getTitle());
+            tvBody3.setText(info[2].getBody());
+        }
         return view;
     }
 

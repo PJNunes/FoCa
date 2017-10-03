@@ -1,6 +1,7 @@
 package pt.ua.foca;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -10,10 +11,10 @@ import java.util.*;
 public class Item implements Serializable {
     private static final long serialVersionUID = -1213949467658913456L;
     private String title;
-    private String body;
+    private Canteen[] body;
     private static ArrayList<Item> items = new ArrayList<>();
 
-    public Item(String title, String body) {
+    public Item(String title, Canteen[] body) {
         this.title = title;
         this.body = body;
     }
@@ -22,7 +23,7 @@ public class Item implements Serializable {
         return title;
     }
 
-    public String getBody() {
+    public Canteen[] getBody() {
         return body;
     }
 
@@ -35,7 +36,7 @@ public class Item implements Serializable {
         return items;
     }
 
-    public static void addItem(String day, String content) {
+    public static void addItem(String day, Canteen[] content) {
         items.add(new Item(day, content));
     }
 }
