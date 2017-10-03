@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FoCa</string>
+    <string name="title_activity_item_detail">ItemDetailActivity</string>
+</resources>
