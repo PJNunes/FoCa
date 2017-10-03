@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,15 +17,14 @@ import java.net.URL;
  * Created by Pedro Nunes
  */
 
-class FoodParser {
-
-    //cache
-    private String jsonStr = null;
+class FoodParser{
 
     public Tuple[] getData() throws JSONException {
 
-        jsonStr = callAPI();
-        JSONObject json = new JSONObject(jsonStr);
+        String jsonStr = callAPI();
+        if(jsonStr==null)
+            return null;
+        JSONObject json=new JSONObject(jsonStr);
         JSONArray menu = json.getJSONObject("menus").getJSONArray("menu");
 
         int j=0;
@@ -68,7 +66,6 @@ class FoodParser {
                         content += items.getString(x)+"\n\n";
                 }
             }
-            Log.v("FP",canteen+" "+day);
             if(entry.getJSONObject("@attributes").getString("meal").compareTo("Almoço")==0) {
                 almoco[k = getNext(k)] = new Canteen(canteen, content);
             }
