@@ -1,5 +1,6 @@
 package pt.ua.foca;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -7,6 +8,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,11 +26,14 @@ import java.net.URL;
 
 class FoodParser{
 
-    public Tuple[] getData() throws JSONException {
+    public Tuple[] getData(Context ctx) throws JSONException {
 
         String jsonStr = callAPI();
         if(jsonStr==null)
-            return null;
+            jsonStr=readFile(ctx);
+        else
+            saveFile(jsonStr, ctx);
+        Log.v("FP",jsonStr);
         JSONObject json=new JSONObject(jsonStr);
         JSONArray menu = json.getJSONObject("menus").getJSONArray("menu");
 
@@ -81,6 +91,53 @@ class FoodParser{
         results[++j]= new Tuple<>(title,jantar);
 
         return results;
+    }
+
+    private String readFile(Context ctx) {
+        String ret = "";
+
+        try {
+            InputStream inputStream = ctx.openFileInput("cache.json");
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+
+        Log.v("FP", ret);
+        return ret;
+    }
+
+    private void saveFile(String s, Context ctx) {
+        try {
+            File file = new File(ctx.getFilesDir(),"mydir");
+            if(!file.exists()){
+                file.mkdir();
+            }
+            FileWriter fw = new FileWriter(new File(file, "cache.json"));
+            fw.write(s);
+            fw.flush();
+            fw.close();
+
+        } catch (IOException e) {
+            Log.v("FP", "failed save");
+            e.printStackTrace();
+        }
     }
 
     private String callAPI() {
