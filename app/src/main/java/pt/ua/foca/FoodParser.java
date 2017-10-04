@@ -8,12 +8,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -30,7 +29,6 @@ class FoodParser{
             jsonStr=readFile(ctx);
         else
             saveFile(jsonStr, ctx);
-        Log.v("FP",jsonStr);
         JSONObject json=new JSONObject(jsonStr);
         JSONArray menu = json.getJSONObject("menus").getJSONArray("menu");
 
@@ -122,15 +120,12 @@ class FoodParser{
 
     private void saveFile(String s, Context ctx) {
         try {
-            File file = new File(ctx.getFilesDir(),"mydir");
-            FileWriter fw = new FileWriter(new File(file, "cache.json"));
-            fw.write(s);
-            fw.flush();
-            fw.close();
-
-        } catch (IOException e) {
-            Log.v("FP", "failed save");
-            e.printStackTrace();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(ctx.openFileOutput("cache.json", Context.MODE_PRIVATE));
+            outputStreamWriter.write(s);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
         }
     }
 
